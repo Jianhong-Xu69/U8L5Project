@@ -153,4 +153,45 @@ public class Encryptor {
         }
         return temp;
     }
+
+    /** Shifts the top row to the bottom 2 times
+     *
+     *   Precondition: letterBlock has been filled
+     */
+    public void flipRow(){
+        for (int r = 0; r < 2; r++) {
+            String temp[] = new String[numCols];
+            for (int c = 0; c < numCols; c++) {
+                temp[c] = letterBlock[r][c];
+            }
+            for (int i = 0; i < numRows-1; i++) {
+                for (int j = 0; j < numCols; j++) {
+                    letterBlock[i][j] = letterBlock[i+1][j];
+                }
+            }
+            for (int l = 0; l < numCols; l++) {
+                letterBlock[numRows-1][l] = temp[l];
+            }
+        }
+    }
+    /** Shifts the leftmost column to the rightmost 2 times
+     *
+     *   Precondition: letterBlock has been filled
+     */
+    public void flipCol(){
+        for (int c = 0; c < 2; c++) {
+            String temp[] = new String[numCols];
+            for (int c = 0; c < numCols; c++) {
+                temp[c] = letterBlock[r][c];
+            }
+            for (int i = 0; i < numRows-1; i++) {
+                for (int j = 0; j < numCols; j++) {
+                    letterBlock[i][j] = letterBlock[i+1][j];
+                }
+            }
+            for (int l = 0; l < numCols; l++) {
+                letterBlock[numRows-1][l] = temp[l];
+            }
+        }
+    }
 }
