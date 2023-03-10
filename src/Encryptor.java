@@ -154,14 +154,35 @@ public class Encryptor {
         return temp;
     }
 
-    /** Shifts the top row to the bottom 2 times
-     *
+    /** Shifts the top row to the bottom n times
+     *   @param n amount of shifts
      *   Precondition: letterBlock has been filled
      */
-    public void flipRow(){
-        for (int r = 0; r < 2; r++) {
-            String temp[] = new String[numCols];
+    public void shiftRow(int n){
+        for (int r = 0; r < n; r++) {
+            String[] temp = new String[numCols];
             for (int c = 0; c < numCols; c++) {
+                temp[c] = letterBlock[0][c];
+            }
+            for (int i = 0; i < numRows-1; i++) {
+                for (int j = 0; j < numCols; j++) {
+                    letterBlock[i][j] = letterBlock[i+1][j];
+                }
+            }
+            for (int l = 0; l < numCols; l++) {
+                letterBlock[numRows-1][l] = temp[l];
+            }
+        }
+    }
+    /** Shifts the leftmost column to the rightmost n times
+     *
+     *   @param n amount of flips
+     *   Precondition: letterBlock has been filled
+     */
+    public void shiftCol(int n){
+        for (int c = 0; c < n; c++) {
+            String temp[] = new String[numCols];
+            for (int r = 0; r < numCols; r++) {
                 temp[c] = letterBlock[r][c];
             }
             for (int i = 0; i < numRows-1; i++) {
@@ -174,24 +195,104 @@ public class Encryptor {
             }
         }
     }
-    /** Shifts the leftmost column to the rightmost 2 times
-     *
+
+    /** Shifts the top row to the bottom n times
+     *   @param n amount of shifts
      *   Precondition: letterBlock has been filled
      */
-    public void flipCol(){
-        for (int c = 0; c < 2; c++) {
-            String temp[] = new String[numCols];
+    public void shiftRowAlt(int n){
+        for (int r = 0; r < n; r++) {
+            String[] temp = new String[numCols];
             for (int c = 0; c < numCols; c++) {
-                temp[c] = letterBlock[r][c];
+                temp[c] = letterBlock[numRows-1][c];
             }
-            for (int i = 0; i < numRows-1; i++) {
+            for (int i = 1; i < numRows; i++) {
                 for (int j = 0; j < numCols; j++) {
-                    letterBlock[i][j] = letterBlock[i+1][j];
+                    letterBlock[i][j] = letterBlock[i-1][j];
                 }
             }
             for (int l = 0; l < numCols; l++) {
-                letterBlock[numRows-1][l] = temp[l];
+                letterBlock[0][l] = temp[l];
             }
         }
     }
+
+    /** Places a string into letterBlock in row-major order.
+     *
+     *   @param str  the string to be processed
+     *
+     *   Postcondition:
+     *     if str.length() < numRows * numCols, "A" in each unfilled cell
+     *     if str.length() > numRows * numCols, trailing characters are ignored
+     */
+    public void fillBlockButEpic(String str, int rs, int cs) {
+        int counter = 0;
+        for (int r = 0; r < numRows; r++) {
+            for (int c = 0; c < numCols; c++) {
+                if (counter < str.length()) {
+                    letterBlock[r][c] = String.valueOf(str.charAt(counter));
+                } else {
+                    letterBlock[r][c] = "A";
+                }
+                counter++;
+            }
+        }
+        shiftRow(rs);
+    }
+
+    /** Places a string into letterBlock in column-major order.
+     *
+     *   @param str  the string to be processed
+     *
+     *   Postcondition:
+     *     if str.length() < numRows * numCols, "A" in each unfilled cell
+     *     if str.length() > numRows * numCols, trailing characters are ignored
+     */
+    public void fillBlockAltButEpic(String str, int rs, int cs) {
+        int counter = 0;
+        for (int c = 0; c < numCols; c++) {
+            for (int r = 0; r < numRows; r++) {
+                if (counter < str.length()) {
+                    letterBlock[r][c] = String.valueOf(str.charAt(counter));
+                } else {
+                    letterBlock[r][c] = "A";
+                }
+                counter++;
+            }
+        }
+        shiftRowAlt(rs);
+    }
+
+    /** encryptMessage but epic
+     *
+     * @param message input to encrypt
+     * @return encrypted message
+     */
+    public String superEncryptor(String message, int rs, int cs){
+        int start = 0;
+        String temp = "";
+        while (start < message.length()){
+            fillBlockButEpic(message.substring(start),rs,cs);
+            temp += encryptBlock();
+            start += numCols * numRows;
+        }
+        return temp;
+    }
+
+    /** decryptMessage but epic
+     *
+     * @param message input to encrypt
+     * @return decrypted message
+     */
+    public String superDecryptor(String message, int rs, int cs){ //don't work
+        int start = 0;
+        String temp = "";
+        while (start < message.length()){
+            fillBlockAltButEpic(message.substring(start),rs,cs);
+            temp += encryptBlock();
+            start += numCols * numRows;
+        }
+        return temp;
+    }
+
 }

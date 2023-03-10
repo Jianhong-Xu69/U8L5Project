@@ -13,9 +13,9 @@ public class EncryptorRunner {
         System.out.println("What is the message?");
         String m = user.nextLine();
         if (a.equalsIgnoreCase("e")){
-            System.out.println(test.encryptMessage(m));
+            System.out.println(test.superEncryptor(m,2,2));
         } else {
-            System.out.println(test.decryptMessage(m));
+            System.out.println(test.superDecryptor(m,2,2));
         }
     }
 }
